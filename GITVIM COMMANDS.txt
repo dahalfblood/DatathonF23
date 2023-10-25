@@ -1,0 +1,13 @@
+GIT/VIM COMMANDS
+
+git clone [REPO URL]
+
+git config --global https.postBuffer [File Size]
+
+git config --global htts.lowSpeedTime [time in seconds]
+
+VIM commit save/quit
+i >> {commit message} >> [esc] >> :wq
+
+git add . >> git commit >> git push
+
