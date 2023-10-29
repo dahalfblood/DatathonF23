@@ -4,6 +4,7 @@
 This number does not coincide with the number given by Excel. This is because of file headers etc
 17616
 (3) How many school districts were there in 2017-18 with a different data set?
+18843
 
 Red questions:
 
@@ -11,4 +12,6 @@ Red questions:
 #2 17616 This number does not coincide with the number given by Excel. This is because of file headers etc
 #3 cp-1252 is needed for us based data becuase it is the legacy standard 
     and without specificying it will be treated as utf-8 and decoding will fail
-#4
+#4 18843 it doesnt match because listing every district is a huge task and im sure small tiny disctricts can 
+    be forgoteen about etc depending on the rigor of the agency gathering data
+#5 I trust the EDGE data more because there are more lines per taylor woodard
