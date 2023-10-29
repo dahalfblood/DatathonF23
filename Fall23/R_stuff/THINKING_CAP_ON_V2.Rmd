@@ -1,0 +1,124 @@
+---
+title: "Thinking_cap_on_v2"
+output: html_document
+date: "2023-10-29"
+---
+
+```{r}
+library(ggplot2)
+library(caret)
+library(tidyr)
+library(codep)
+library(corrr)
+library(corrplot)
+library(dplyr)
+library(FactoMineR)
+library(factoextra)
+library(openxlsx)
+library(readxl)
+library(readr)
+```
+
+```{r}
+#loading algebra data to explore the data
+agl1_data <- read.csv("D:\\Datathon\\Data_files\\2017-18-crdc-data\\2017-18 Public-Use Files\\Data\\SCH\\CRDC\\CSV\\Algebra I.csv")
+alg2_data <- read.csv("D:\\Datathon\\Data_files\\2017-18-crdc-data\\2017-18 Public-Use Files\\Data\\SCH\\CRDC\\CSV\\Algebra II.csv")
+
+```
+
+```{r}
+#data sorted to texas entries only
+tx_alg_data <- subset(agl1_data, LEA_STATE_NAME == "TEXAS")
+# Replace -9 with 0 in specific columns
+numeric_cols <- sapply(tx_alg_data, is.numeric)
+tx_alg_data[numeric_cols] <- lapply(tx_alg_data[numeric_cols], function(x) ifelse(x == -9, 0, x))
+x_min <- min(tx_alg_data$TOT_ALGPASS_GS0910_M)
+x_max <- max(tx_alg_data$TOT_ALGPASS_GS0910_M)
+x_max2 <- max(tx_alg_data$TOT_ALGENR_GS0910_M)
+```
+
+```{r}
+#graphs
+hist(
+  tx_alg_data$TOT_ALGPASS_GS0910_M,
+  breaks = seq(0, 538),
+  xlim = c(2,270),
+  ylim = c(0,60),  
+  main = "Histogram",
+  xlab = "",
+  ylab = "Frequency"
+)
+
+hist(
+  tx_alg_data$TOT_ALGPASS_GS0910_M,
+  breaks = seq(0, 538),
+  xlim = c(4,60),
+  ylim = c(0,60),  
+  main = "Histogram",
+  xlab = "",
+  ylab = "Frequency"
+)
+
+hist(
+  tx_alg_data$TOT_ALGPASS_GS0910_M,
+  breaks = seq(0, 538),
+  xlim = c(200,300),
+  ylim = c(0,10),  
+  main = "Histogram",
+  xlab = "",
+  ylab = "Frequency"
+)
+
+hist(
+  tx_alg_data$TOT_ALGENR_GS0910_M,
+  breaks = seq(0, 599),
+  xlim = c(0,5),
+  ylim = c(0,7000),  
+  main = "Histogram",
+  xlab = "",
+  ylab = "Frequency"
+)
+
+```
+
+```{r}
+boxplot(tx_alg_data$TOT_ALGPASS_GS0910_F, 
+        tx_alg_data$TOT_ALGPASS_GS0910_M, 
+        tx_alg_data$TOT_ALGPASS_GS1112_F, 
+        tx_alg_data$TOT_ALGPASS_GS1112_M, 
+        main = "boxplot", xlab = "v")
+
+#tx_alg_data$TOT_ALGPASS_GS0910_M
+```
+```{r, Warning = FALSE} 
+#grad rates by male by race
+mA <- read.csv("D:\\Datathon\\Data_files\\oppatlas\\grad_sex\\Male\\shown_cty_hs_rA_gM_pall.csv")
+mB <- read.csv("D:\\Datathon\\Data_files\\oppatlas\\grad_sex\\Male\\shown_cty_hs_rB_gM_pall.csv")
+mH <- read.csv("D:\\Datathon\\Data_files\\oppatlas\\grad_sex\\Male\\shown_cty_hs_rH_gM_pall.csv")
+mALL <- read.csv("D:\\Datathon\\Data_files\\oppatlas\\grad_sex\\Male\\shown_cty_hs_rP_gM_pall.csv")
+mNA <- read.csv("D:\\Datathon\\Data_files\\oppatlas\\grad_sex\\Male\\shown_cty_hs_rNA_gM_pall.csv")
+mW <- read.csv("D:\\Datathon\\Data_files\\oppatlas\\grad_sex\\Male\\shown_cty_hs_rW_gM_pall.csv")
+merg_M_ALL <- inner_join(mA, mB, mH, mALL, mNA, mW)
+
+
+```
+
+```{r}
+m_ALL_race <- data.frame(
+  county = character(0),
+  GR_mP = numeric(0),
+  GR_mA = numeric(0),
+  GR_mNA = numeric(0),
+  GR_mH = numeric(0),
+  GR_mB = numeric(0),
+  GR_mW = numeric(0)
+)
+
+m_ALL_race$county <- c("Comal",)
+```
+
+
+
+
+
+

@@ -1,0 +1,52 @@
+---
+title: "pov v cert"
+output:
+  pdf_document: default
+  html_document: default
+date: "2023-10-29"
+---
+
+```{r}
+library(ggplot2)
+library(caret)
+library(tidyr)
+library(codep)
+library(corrr)
+library(corrplot)
+library(dplyr)
+library(FactoMineR)
+library(factoextra)
+library(openxlsx)
+library(readxl)
+library(readr)
+```
+
+```{r}
+#import data
+povcertdf <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\pov_vs_advmcert.csv")
+```
+```{r}
+
+```
+
+```{r}
+
+plot(povcertdf$percent_pov, povcertdf$sch_mathcert_advm,
+     xlim = c(0,1),
+     ylim = c(0,50))
+leopopvert <- lowess(povcertdf$sch_mathcert_advm ~ povcertdf$percent_pov, f = .2)
+lines(leopopvert, col = "green", lwd = "2")
+plot(povcertdf$percent_pov, povcertdf$sch_mathcert_advm,
+     xlim = c(0,.5),
+     ylim = c(0,50))
+leopopvert2 <- lowess(povcertdf$sch_mathcert_advm ~ povcertdf$percent_pov, f = .2)
+lines(leopopvert2, col = "green", lwd = "2")
+
+
+
+corcert<- cor(povcertdf$sch_mathcert_advm, povcertdf$percent_pov)
+print(corcert)
+
+covcert <- cov(povcertdf$sch_mathcert_advm, povcertdf$percent_pov)
+print(covcert)
+```

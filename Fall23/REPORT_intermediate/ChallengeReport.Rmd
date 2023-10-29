@@ -1,0 +1,574 @@
+---
+title: "pov_v math et al"
+subtitle: Taylor Woodard and Joseph King
+output:
+  pdf_document: default
+  html_document: default
+date: "2023-10-29"
+---
+
+```{r, message=FALSE,echo = FALSE}
+#import absolutely Necessary Libraries
+library(ggplot2)
+library(caret)
+library(tidyr)
+library(codep)
+library(corrr)
+library(corrplot)
+library(dplyr)
+library(FactoMineR)
+library(factoextra)
+library(openxlsx)
+library(readxl)
+library(readr)
+library(vioplot)
+```
+```{text}
+#Introduction/ Procedures
+
+Introduction:
+We were give a collection of data sets in the form of .CSV/.XLSX/.XLS 
+and we were tasked with determining whether or not one could define a correlation between 
+the amount of financial resources available for students versus the student's access to 
+seemingly scarce resources, such as certified teachers for the courses.
+
+Initial Hypothesis:
+After an initial skim of the data provided, we feel that there is a significant 
+correlation between a students economic standing versus a students
+likelihood to succeed academically. If there is a correlation between
+economic status and academic success, then we will be able to capture that 
+information graphically, because the data will leave us, beyond a reasonable 
+doubt, certain that poverty is one of the major contributors to 
+poor academic success
+
+Procedures: 
+
+
+We then plotted varying types of visual graphics to display the data and determined which 
+graphs gave us the best graphical representation of our understanding about the data that we were 
+working with. The chosen Graph for a majority of the data sets was a scatterplot. We felt that the 
+scatterplot was the best choice to visualize our data because of how dense our data was. In certain 
+areas of the data, as the reader will see, the information on the graph is so densely populated 
+that the graph appears to take shape. Given the fact that we chose to compare Poverty to multiply 
+individual, we were able to get an intuition into what the data was trying to convey.
+```
+
+```{text}
+#Part 1 of the challenge
+
+###How many school districts were there in total in 2017-18 using Excel?
+
+17604
+
+###How many school districts were there in 2017-18 using Python? 
+
+17616, this number is not the same as excel produced. I believe this to be 
+caused by file headers etc.
+
+###How many school districts were there in 2017-18 with a different data set?
+
+18843
+
+###Why would you need encoding=“cp1252” for US data? 
+
+cp1252 is needed for us based data because it is the legacy standard and without specifying it will be treated as utf-8 and decoding will fail.
+
+ ###This number does not match the CRDB database, but both databases claim to have the list of school districts in the US in the period 2017-18. Explain why.'
+ 
+18843, it doesn't match because listing every district is a huge task and I would imagine small tiny districts can be forgotten about etc depending on the rigor of the agency gathering data. Also the surveying agents could have group data together differently when they were recording it.
+
+### Which do you trust more? Two different analysts might end up with different results using different datasets, or, worse, using the same database, as we showed with the exploration of the CRDC file. Reflect on this. 
+
+N/A
+
+###
+
+
+
+
+```
+
+
+```{text}
+###Begin Question 3: Intermediate
+
+For this question we were asked to initially determine the total
+number of students in America per District, and compare that
+to Poverty Status/rates.
+The method we used was:
+
+First join crdc lea characteristics and ussd17. Ussd17 needs to be cleaned by having commas stripped from the counts of students . from there join on district id and lea code. Ussd17 needs to concatenate the two district codes to be able to match up with 7 digit lea id. From here pull out lea id, total enrollment, and number of children in poverty.
+--USED TO JOIN THE USSD17 DATA AND THE LEA CHARACTERISTICS DATA SETS TOGETHER SO WE CAN SEE RATES OF
+--  CHILD POVERTY PER DISTRICT
+SELECT fips_code, district_id, child_pop, child_poverty_pop, leaid, lea_enr FROM ussd17, leacharacteristics
+WHERE ussd17.fips_code || ussd17.district_id LIKE leacharacteristics.leaid
+Add a column to new table and fill with the percentage of students in poverty. From here join on lea id between this “poverty” table and the various class subject tables. From here extract poverty rate and number of certified teachers from the school subject tables.
+
+--USED TO COMPARE PERCENT OF CHILDREN IN POVERTY PER DISTRICT TO NUMBER OF CERTIFIED TEACHERS IN SAME DISTRICT
+create table pov_vs_algebra2 as (
+SELECT percent_pov, "SCH_MATHCERT_ALG2"
+	From pov_vs_enr, algebra2
+	where pov_vs_enr.leaid like algebra2.leaid
+    	and cast(sch_mathcert_alg2 as int) >= 0)
+
+--PERCENT_POV WAS CALCULATED BY DIVIDING LEACHARACTERISTICS.LEA_ENR INTO USSD17.child_poverty_pop
+UPDATE POVERTY_VS_ENROLLMENT
+SET PERCENT_POV = CAST(POVERTY_POP AS NUMERIC) / CAST(ENROLLMENT AS NUMERIC)
+
+Next we were asked to compare poverty rates to teachers with specified
+certifications and try and establish a correlation.
+Again, we chose to use scatterplots because of the pure density of the 
+data, but overall we feel as if this observation was enough to give us
+better understanding of the effects that poverty has on good resources 
+for the students.
+The choice of our 'best fit' line was chosen by what would give use the best
+understanding of what is happening within the cluster of data points. The 
+lowess function was used to give us a Locally Weighted Scatterplot Smoothing 
+curve. This was necessary due to the fact other smoothing methods would result 
+in either too stochastic fit such that the behavior of the data was 
+indeterminate or so smooth that we would get back perfectly straight lines. 
+The Locally Weighted line allowed for the areas of extreme density to have 
+the expected effect when fitting data, while not losing sight of what the data is trying to show us
+```
+
+
+
+```{r, echo=FALSE}
+#import csv files for data
+povbiodf <- read.csv("C:\\\\Users\\\\Taygr\\\\OneDrive\\\\Desktop\\\\GitRepositories\\\\DatathonF23\\\\Fall23\\\\Intermediate\\\\3_1\\\\pov_vs_biology.csv")
+povcalc <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\pov_vs_calculus.csv")
+povchem <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\pov_vs_chemistry.csv")
+povgeo <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\pov_vs_geometry.csv")
+povphy <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\pov_vs_physics.csv")
+povpopdf <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\poverty_vs_enrollment.csv")
+povalg2df <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\pov_vs_alg2.csv")
+povcertdf <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\pov_vs_advmcert.csv")
+all_wealth <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\oppatlas\\grad_rates_wealth\\all_wealth.csv")
+all_sex <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\oppatlas\\grad_sex\\all_sex.csv")
+wp25<- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\oppatlas\\grad_rates_wealth\\shown_cty_hs_rP_gP_p25.csv")
+wp50<- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\oppatlas\\grad_rates_wealth\\shown_cty_hs_rP_gP_p50.csv")
+wp75<- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\oppatlas\\grad_rates_wealth\\shown_cty_hs_rP_gP_p75.csv")
+wpall<- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\oppatlas\\grad_rates_wealth\\shown_cty_hs_rP_gP_pall.csv")
+```
+
+
+
+
+```{r, message=FALSE, warning=FALSE}
+###  X1546 = Number of Students in Poverty per Distric
+### X5445 = Total number of Students per District
+#number of students in poverty v population of districts
+
+#scatterplolt of X1546 v X5445
+plot(povpopdf,
+     xlim = c(0,10000), 
+     ylim = c(1,60000))
+loepovpop <- lowess(povpopdf$X5445 ~ povpopdf$X1546, f = .2)
+lin_povpop <- lm(X5445 ~ X1546, data = povpopdf)
+#abline(lin_povpop, col = "red")
+lines(loepovpop, col = "green", lwd = "2")
+
+covpovpop <- cov(povpopdf$X5445,povpopdf$X1546)
+print(covpovpop)
+
+corpovpop <- cor(povpopdf)
+labelfix <- c("in_pov", "dist_pop")
+rownames(corpovpop) <- labelfix
+colnames(corpovpop) <- labelfix
+print(corpovpop)
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+#percentage of poverty v algebra 2 enrollment
+
+#scatter plot of percent_pov v mathcert_alg2
+plot(povalg2df,
+     xlim = c(0,1),
+     ylim = c(0,150))
+leopopalg2 <- lowess(povalg2df$SCH_MATHCERT_ALG2 ~ povalg2df$percent_pov, f = .2)
+lines(leopopalg2, col = "green", lwd = "2")
+corpovalg2 <- cor(povalg2df)
+print(corpovalg2)
+```
+
+```{r, message=FALSE, warning=FALSE}
+#percent poverty v adv math certification
+
+#Scatterplot of percent_pov v mathcert_advm
+plot(povcertdf$percent_pov, povcertdf$sch_mathcert_advm,
+     xlim = c(0,1),
+     ylim = c(0,50),
+     main = "percent_pov v mathcert_advm",
+     xlab = "percent_pov",
+     ylab = "mathcert_advm")
+leopopvert <- lowess(povcertdf$sch_mathcert_advm ~ povcertdf$percent_pov, f = .2)
+lines(leopopvert, col = "green", lwd = "2")
+corpovcertdf <- cor(povcertdf)
+print(corpovcertdf)
+```
+
+```{r, message=FALSE, warning=FALSE}
+#poverty v bio cert
+
+#scatterplot of percent_pov v sciccert_biol
+plot(povbiodf,
+     xlim = c(0,1),
+     ylim = c(0,100),
+     main = "percent_pov v sciccert_biol",
+     xlab = "percent_pov",
+     ylab = "sciccert_biol")
+leopopbio <- lowess(povbiodf$SCH_SCICCERT_BIOL ~ povbiodf$percent_pov, f = .2)
+lines(leopopbio, col = "green", lwd = "2")
+corpovbio <- cor(povbiodf)
+print(corpovbio)
+```
+
+```{r, message=FALSE, warning=FALSE}
+#poverty v calc cert
+
+#scatter plot of percent_pov v mathcert_calc
+plot(povcalc,
+     xlim = c(0,1),
+     ylim = c(0,100),
+     main = "percent_pov v mathcert_calc",
+     xlab = "percent_pov",
+     ylab = "mathcert_calc")
+leopopcalc <- lowess(povcalc$SCH_MATHCERT_CALC ~ povcalc$percent_pov, f = .2)
+lines(leopopcalc, col = "green", lwd = "2")
+corpovcal <- cor(povcalc)
+print(corpovcal)
+```
+
+```{r, message=FALSE, warning=FALSE}
+#poverty v chem cert
+
+#scatter plot of percent_pov v sciccert_chem
+plot(povchem,
+     xlim = c(0,1),
+     ylim = c(0,100),
+     main = "percent_pov v sciccert_chem",
+     xlab = "percent_pov",
+     ylab = "sciccert_chem")
+leopopchem <- lowess(povchem$SCH_SCICCERT_CHEM ~ povchem$percent_pov, f = .2)
+lines(leopopchem, col = "green", lwd = "2")
+corpovchem <- cor(povchem)
+print(corpovchem)
+```
+
+```{r, message=FALSE, warning=FALSE}
+#poverty v geometry enrollment
+
+#scatter plot of percent_pov v mathcert_geom
+plot(povgeo,
+     xlim = c(0,1),
+     ylim = c(0,100),
+     main = "percent_pov v mathcert_geom",
+     xlab = "percent_pov",
+     ylab = "mathcert_geom")
+leopopgeo <- lowess(povgeo$SCH_MATHCERT_GEOM ~ povgeo$percent_pov, f = .2)
+lines(leopopgeo, col = "green", lwd = "2")
+corpovgeo <- cor(povgeo)
+print(corpovgeo)
+```
+
+```{r, message=FALSE, warning=FALSE}
+#povert v physics cert
+
+#scatter plot of percent_pov v sciccert_phys
+plot(povphy,
+     xlim = c(0,1),
+     ylim = c(0,100),
+     main = "percent_pov v sciccert_phys",
+     xlab = "percent_pov",
+     ylab = "sciccert_phy")
+leopopphy <- lowess(povphy$SCH_SCICCERT_PHYS ~ povphy$percent_pov, f = .2)
+lines(leopopphy, col = "green", lwd = "2")
+corpovphy <- cor(povphy)
+print(corpovphy)
+
+
+```
+
+```{text}
+As it was displayed in the graphs, our best fit lines gave us a small idea that
+the data was doing what we predicted. That is, we were hoping that the data 
+would show us that there is a negative correlation between increasing poverty
+rates and the scarcity of available resources.
+
+
+
+###END QUESTION 3
+```
+
+```{text}
+###START QUESTION 4
+
+Question 4: Intermediate
+
+For this question we were tasked with using an online database called
+"The Opportunity Atlas". From this database, we were asked to pick an 
+arbitrary city. From this city data, we were asked to compare reported with 
+and academic success in high school. For our analysis, we chose to focus
+specifically on Graduation rate, because we felt that a majority of success 
+that a school district will have is strongly dependent on its graduation
+rate.
+The city we chose to focus on was San Antonio, Texas. As a note for the reader,
+we chose to concatenate all of the county data into one data frame, such that
+the violin plot will give us the general trend of how the graduation rates
+in the greater San Antonio are effected by economic standing.
+Unfortunately due to the constraints of time and other issues that will be
+mentioned, we were not able to organize the data by census tract/districID
+
+```
+
+```{r, warning=FALSE, message=FALSE}
+plot_list = list(w25 = wp25$High_School_Graduation_Rate_rP_gP_p25, w50 = wp50$High_School_Graduation_Rate_rP_gP_p50, w75 = wp75$High_School_Graduation_Rate_rP_gP_p75,
+                 wall = wpall$High_School_Graduation_Rate_rP_gP_pall)
+
+#boxplot(plot_list, main = "boxplot of economic quartile ranges")
+vioplot(plot_list, names = c("w25","w50","w75","wall"), col = "blue", 
+        main = "Violin plot of economic quartile ranges", xlab = "IQR",
+        ylab = "graduation rates")
+```
+
+```{text}
+After observing the plots of our data, we see some interesting behaviors from
+the data.
+
+First if we look at w25, which is our data block for IQR (interquartile range)
+25% for earnings in San Antonio. From the plot, we see that there is almost even spread for the data points in this range. This could imply that when it comes to 
+groups of lower economic standing, availability to resources in the form of 
+money may not be one of the leading contributors of a students success in 
+school.
+
+Next, looking at w50, which is out data block for IQR 50%, we see that there
+is not much variation within the county data. This could imply that in
+groups in this economic range, if the goal of the districts within this range
+but tending towards the lower end, this economic bracket gives leads to the 
+idea that this is possibly an ideal amount of available financial requirements
+needed to successfully run a school district. Furthermore, it leads to the idea
+that, if this is an ideal range of income, how could we raise the financial 
+support for the IQR 25% such that they are able to meet minimum resource 
+availability and also graduate students with high numbers.
+
+###END 4
+```
+
+```{text}
+Conclusion/Points of Error and Limiting Factors:
+
+Limiting Factors:
+Some major issues that we ran into during our challenge was how to begin dealing
+with the large amount of data that we were given. With such large amounts of 
+data and such open-ended questions, it was extremely time consuming to have 
+to sift through all of the data and determine what data was even usable.
+
+Then the issue came from the processing power of our machines. We were asking
+our machines to do way more than they are probably meant to do,
+so when it came to things like merging files, and running multiple environment
+simultaneously to ensure maximal efficiency given the limitations of our 
+machines.
+
+Lastly, due to the high volume of data given, on top of the time constraint,
+we were forced to modify our approach to the questions, specifically in 
+regard to Question 4. But for the sake of competition, no submission is much 
+worse than an incomp--... modified response to the Challenge Question.
+
+Points of Error:
+There maybe unforseen discrepancies within the data due to the fact that we 
+were required to do a significant amount of data manipulation in order
+to get the data in a useble form. Therefore, in the event that this approach
+to the data is reproduced, please note that results may vary.
+
+Conclusion:
+In conclusion, given from the data that we explored, we have come to the 
+conclusion that the data tells us enough information about the data such that
+we can say with a moderate degree of confidence that our initial hypothesis
+is reflected in the visualizations.
+
+
+```
+
+```{text}
+###R Script in chunks
+
+{r, message=FALSE,echo = FALSE}
+#import absolutely Necessary Libraries
+library(ggplot2)
+library(caret)
+library(tidyr)
+library(codep)
+library(corrr)
+library(corrplot)
+library(dplyr)
+library(FactoMineR)
+library(factoextra)
+library(openxlsx)
+library(readxl)
+library(readr)
+library(vioplot)
+
+{r, echo=FALSE}
+#import csv files for data
+povbiodf <- read.csv("C:\\\\Users\\\\Taygr\\\\OneDrive\\\\Desktop\\\\GitRepositories\\\\DatathonF23\\\\Fall23\\\\Intermediate\\\\3_1\\\\pov_vs_biology.csv")
+povcalc <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\pov_vs_calculus.csv")
+povchem <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\pov_vs_chemistry.csv")
+povgeo <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\pov_vs_geometry.csv")
+povphy <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\pov_vs_physics.csv")
+povpopdf <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\poverty_vs_enrollment.csv")
+povalg2df <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\pov_vs_alg2.csv")
+povcertdf <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\pov_vs_advmcert.csv")
+all_wealth <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\oppatlas\\grad_rates_wealth\\all_wealth.csv")
+all_sex <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\oppatlas\\grad_sex\\all_sex.csv")
+wp25<- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\oppatlas\\grad_rates_wealth\\shown_cty_hs_rP_gP_p25.csv")
+wp50<- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\oppatlas\\grad_rates_wealth\\shown_cty_hs_rP_gP_p50.csv")
+wp75<- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\oppatlas\\grad_rates_wealth\\shown_cty_hs_rP_gP_p75.csv")
+wpall<- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\oppatlas\\grad_rates_wealth\\shown_cty_hs_rP_gP_pall.csv")
+
+
+{r, message=FALSE, warning=FALSE}
+###  X1546 = Number of Students in Poverty per Distric
+### X5445 = Total number of Students per District
+#number of students in poverty v population of districts
+
+#scatterplolt of X1546 v X5445
+plot(povpopdf,
+     xlim = c(0,10000), 
+     ylim = c(1,60000))
+loepovpop <- lowess(povpopdf$X5445 ~ povpopdf$X1546, f = .2)
+lin_povpop <- lm(X5445 ~ X1546, data = povpopdf)
+#abline(lin_povpop, col = "red")
+lines(loepovpop, col = "green", lwd = "2")
+
+covpovpop <- cov(povpopdf$X5445,povpopdf$X1546)
+print(covpovpop)
+
+corpovpop <- cor(povpopdf)
+labelfix <- c("in_pov", "dist_pop")
+rownames(corpovpop) <- labelfix
+colnames(corpovpop) <- labelfix
+print(corpovpop)
+
+
+
+r, message=FALSE, warning=FALSE}
+#percentage of poverty v algebra 2 enrollment
+
+#scatter plot of percent_pov v mathcert_alg2
+plot(povalg2df,
+     xlim = c(0,1),
+     ylim = c(0,150))
+leopopalg2 <- lowess(povalg2df$SCH_MATHCERT_ALG2 ~ povalg2df$percent_pov, f = .2)
+lines(leopopalg2, col = "green", lwd = "2")
+corpovalg2 <- cor(povalg2df)
+print(corpovalg2)
+
+
+{r, message=FALSE, warning=FALSE}
+#percent poverty v adv math certification
+
+#Scatterplot of percent_pov v mathcert_advm
+plot(povcertdf$percent_pov, povcertdf$sch_mathcert_advm,
+     xlim = c(0,1),
+     ylim = c(0,50),
+     main = "percent_pov v mathcert_advm",
+     xlab = "percent_pov",
+     ylab = "mathcert_advm")
+leopopvert <- lowess(povcertdf$sch_mathcert_advm ~ povcertdf$percent_pov, f = .2)
+lines(leopopvert, col = "green", lwd = "2")
+corpovcertdf <- cor(povcertdf)
+print(corpovcertdf)
+
+
+{r, message=FALSE, warning=FALSE}
+#poverty v bio cert
+
+#scatterplot of percent_pov v sciccert_biol
+plot(povbiodf,
+     xlim = c(0,1),
+     ylim = c(0,100),
+     main = "percent_pov v sciccert_biol",
+     xlab = "percent_pov",
+     ylab = "sciccert_biol")
+leopopbio <- lowess(povbiodf$SCH_SCICCERT_BIOL ~ povbiodf$percent_pov, f = .2)
+lines(leopopbio, col = "green", lwd = "2")
+corpovbio <- cor(povbiodf)
+print(corpovbio)
+
+
+{r, message=FALSE, warning=FALSE}
+#poverty v calc cert
+
+#scatter plot of percent_pov v mathcert_calc
+plot(povcalc,
+     xlim = c(0,1),
+     ylim = c(0,100),
+     main = "percent_pov v mathcert_calc",
+     xlab = "percent_pov",
+     ylab = "mathcert_calc")
+leopopcalc <- lowess(povcalc$SCH_MATHCERT_CALC ~ povcalc$percent_pov, f = .2)
+lines(leopopcalc, col = "green", lwd = "2")
+corpovcal <- cor(povcalc)
+print(corpovcal)
+
+
+{r, message=FALSE, warning=FALSE}
+#poverty v chem cert
+
+#scatter plot of percent_pov v sciccert_chem
+plot(povchem,
+     xlim = c(0,1),
+     ylim = c(0,100),
+     main = "percent_pov v sciccert_chem",
+     xlab = "percent_pov",
+     ylab = "sciccert_chem")
+leopopchem <- lowess(povchem$SCH_SCICCERT_CHEM ~ povchem$percent_pov, f = .2)
+lines(leopopchem, col = "green", lwd = "2")
+corpovchem <- cor(povchem)
+print(corpovchem)
+
+
+{r, message=FALSE, warning=FALSE}
+#poverty v geometry enrollment
+
+#scatter plot of percent_pov v mathcert_geom
+plot(povgeo,
+     xlim = c(0,1),
+     ylim = c(0,100),
+     main = "percent_pov v mathcert_geom",
+     xlab = "percent_pov",
+     ylab = "mathcert_geom")
+leopopgeo <- lowess(povgeo$SCH_MATHCERT_GEOM ~ povgeo$percent_pov, f = .2)
+lines(leopopgeo, col = "green", lwd = "2")
+corpovgeo <- cor(povgeo)
+print(corpovgeo)
+
+
+{r, message=FALSE, warning=FALSE}
+#povert v physics cert
+
+#scatter plot of percent_pov v sciccert_phys
+plot(povphy,
+     xlim = c(0,1),
+     ylim = c(0,100),
+     main = "percent_pov v sciccert_phys",
+     xlab = "percent_pov",
+     ylab = "sciccert_phy")
+leopopphy <- lowess(povphy$SCH_SCICCERT_PHYS ~ povphy$percent_pov, f = .2)
+lines(leopopphy, col = "green", lwd = "2")
+corpovphy <- cor(povphy)
+print(corpovphy)
+
+
+
+{r, warning=FALSE, message=FALSE}
+plot_list = list(w25 = wp25$High_School_Graduation_Rate_rP_gP_p25, w50 = wp50$High_School_Graduation_Rate_rP_gP_p50, w75 = wp75$High_School_Graduation_Rate_rP_gP_p75,
+                 wall = wpall$High_School_Graduation_Rate_rP_gP_pall)
+
+#boxplot(plot_list, main = "boxplot of economic quartile ranges")
+vioplot(plot_list, names = c("w25","w50","w75","wall"), col = "blue", 
+        main = "Violin plot of economic quartile ranges", xlab = "IQR",
+        ylab = "graduation rates")
+
+```

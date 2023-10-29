@@ -1,0 +1,56 @@
+---
+title: "poverty v population"
+output: PDF
+date: "2023-10-29"
+---
+
+
+```{r, warning=FALSE}
+#def will not take advantage of all of these
+library(ggplot2)
+library(caret)
+library(tidyr)
+library(codep)
+library(corrr)
+library(corrplot)
+library(dplyr)
+library(FactoMineR)
+library(factoextra)
+library(openxlsx)
+library(readxl)
+library(readr)
+
+```
+
+```{r}
+povpopdf <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\poverty_vs_enrollment.csv")
+```
+```{r}
+plot(povpopdf,
+     xlim = c(0,10000), 
+     ylim = c(1,60000))
+loepovpop <- lowess(povpopdf$X5445 ~ povpopdf$X1546, f = .2)
+lin_povpop <- lm(X5445 ~ X1546, data = povpopdf)
+#abline(lin_povpop, col = "red")
+lines(loepovpop, col = "green", lwd = "2")
+
+
+
+covpovpop <- cov(povpopdf$X5445,povpopdf$X1546)
+print(covpovpop)
+
+corpovpop <- cor(povpopdf)
+labelfix <- c("in_pov", "dist_pop")
+rownames(corpovpop) <- labelfix
+colnames(corpovpop) <- labelfix
+print(corpovpop)
+
+
+
+povmax <- max(povpopdf$X1546)
+popmax <- max(povpopdf$X5445)
+#mean(povpopdf$X1546)
+#mean(povpopdf$X5445)
+#sd(povpopdf$X1546)
+#sd(povpopdf$X5445)
+```

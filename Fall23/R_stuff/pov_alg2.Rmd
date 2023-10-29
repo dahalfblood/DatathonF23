@@ -1,0 +1,38 @@
+---
+title: "pov v alg"
+output: html_document
+date: "2023-10-29"
+---
+
+```{r}
+library(ggplot2)
+library(caret)
+library(tidyr)
+library(codep)
+library(corrr)
+library(corrplot)
+library(dplyr)
+library(FactoMineR)
+library(factoextra)
+library(openxlsx)
+library(readxl)
+library(readr)
+```
+
+
+```{r}
+povalg2df <- read.csv("C:\\Users\\Taygr\\OneDrive\\Desktop\\GitRepositories\\DatathonF23\\Fall23\\Intermediate\\3_1\\pov_vs_alg2.csv")
+```
+
+```{r}
+plot(povalg2df,
+     xlim = c(0,1),
+     ylim = c(0,150))
+leopopalg2 <- lowess(povalg2df$SCH_MATHCERT_ALG2 ~ povalg2df$percent_pov, f = .2)
+lines(leopopalg2, col = "green", lwd = "2")
+
+plot(povalg2df,
+     xlim = c(0,.2),
+     ylim = c(0,10))
+
+```
