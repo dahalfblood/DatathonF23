@@ -1,0 +1,4 @@
+SELECT fips_code, district_id, child_pop, child_poverty_pop, leaid, lea_enr FROM ussd17, leacharacteristics 
+WHERE ussd17.fips_code || ussd17.district_id LIKE leacharacteristics.leaid
+--ORDER BY leaid ASC
+LIMIT 600
