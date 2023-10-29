@@ -1,2 +1,5 @@
 Explore how all subject matters,
 which you have now imported into PostgreSQL, are related to poverty.
+
+WE ARE COMPARING HOW THE PERCENTAGE OF CHILDREN WITHIN THE DISTRICT IN POVERTY CORRELATES 
+    TO THE AMOUNT OF TEACHERS CERTIFIED TO TEACH VARIOUS CLASSES

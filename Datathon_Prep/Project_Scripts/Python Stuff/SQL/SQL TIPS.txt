@@ -1,7 +1,0 @@
-GOOD SCRIPT COMMANDS
-
-SQL:
-
-SELECT ...
-	FROM " "." "
-	limit ""
