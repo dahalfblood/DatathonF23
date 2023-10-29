@@ -1,0 +1,79 @@
+﻿PARENT INCOME SUBGROUPS
+=======================
+Code	Description
+----	-----------
+pall	All parent income percentiles
+p100	100th percentile parent income
+p75	75th percentile parent income
+p50	50th percentile parent income
+p25	25th percentile parent income
+p1	1st percentile parent income
+
+CHILD RACE SUBGROUPS
+====================
+Code	Description
+----	-----------
+rP	All Races
+rB	Black Non-Hispanic
+rW	White Non-Hispanic
+rH	Hispanic (Any Race)
+rA	Asian Non-Hispanic
+rNA	American Indian
+
+CHILD GENDER SUBGROUPS
+======================
+Code	Description
+----	-----------
+gP	All
+gF	Female
+gM	Male
+
+CHILD COHORT SUBGROUPS
+======================
+Code	Description
+----	-----------
+e	Early Cohort
+l	Late Cohort
+
+VARIABLES
+==========
+Title	Description
+-----	-----------
+Household Income at Age 35	Average annual household income in 2014-15 for children (now in their mid-30s) who grew up in this area. Estimates have a margin of error; for example, standard error at tract level for children with parents at 25th percentile is $1,917 pooling race and gender groups and $2,721 for black men. (Source: Federal income tax records)
+Incarceration Rate	Fraction of children who grew up in this area who were in prison or jail on April 1, 2010. Estimates have a margin of error; for example, standard error at tract level for children with parents at 25th percentile is 1% pooling race and gender groups and 4% for black men. (Source: 2010 Decennial Census)
+Teenage Birth Rate (women only)	Fraction of women who grew up in this area who claimed ever a child who was born when the women were between the ages of 13 and 19 as a dependent when filing taxes. Estimates have a margin of error; for example, standard error at tract level for children with parents at 25th percentile is 4% pooling race groups and 6% for black women. (Source: Income Tax Records)
+Individual Income (Excluding Spouse) at Age 35	Average annual individual income in 2014-15 for children (now in their mid-30s) who grew up in this area. Estimates have a margin of error; for example, standard error at tract level for children with parents at 25th percentile is $1,577 pooling race and gender groups and $2,697 for black men. (Source: Income Tax Records)
+Fraction Married at Age 35	Fraction of children who grew up in this area who are married in 2015 (in their mid-30s). Estimates have a margin of error; for example, standard error at tract level for children with parents at 25th percentile is 3% pooling race and gender groups and 4% for black men. (Source: Income Tax Records)
+Spouse's Income at Age 35	Average annual individual income in 2014-15 for the spouses of children who grew up in this area. Estimates have a margin of error; for example, standard error at tract level for children with parents at 25th percentile is $2,779 pooling race and gender groups and $5,068 for black men. (Source: Income Tax Records)
+Employment Rate at Age 35	Fraction of children who grew up in this area who have positive wage earnings in 2015 (who are now in their mid 30s). Estimates have a margin of error; for example, standard error at tract level for children with parents at 25th percentile is 3% pooling race and gender groups and 5% for black men. (Source: Income Tax Records)
+High School Graduation Rate	Fraction of children who grew up in this area with a high school degree or a GED. Estimates have a margin of error; for example, standard error at county level for children with parents at 25th percentile is 1% pooling race and gender groups and 3% for black men. This outcome is available only at the county (not tract) level due to small sample sizes. (Source: American Community Survey)
+College Graduation Rate	Fraction of children who grew up in this area who hold a 4-year college degree. Estimates have a margin of error; for example, standard error at county level for children with parents at 25th percentile is 2% pooling race and gender groups and 2% for black men. This outcome is available only at the county (not tract) level due to small sample sizes. (Source: American Community Survey)
+Hours Worked Per Week at Age 35	Average hours worked per week among mid-30 year old individuals who grew up in this area. Those who do not work are counted as working 0 hours per week.  Estimates have a margin of error; for example, standard error at county level for children with parents at 25th percentile is 1h pooling race and gender groups and 2h for black men. This outcome is available only at the county (not tract) level due to small sample sizes. (Source: American Community Survey)
+Hourly Wage ($/hour) at Age 35	Average hourly wage for children who grew up in this area and are working, measured when they are in their 30s. Estimates have a margin of error; for example, standard error at county level for children with parents at 25th percentile is $0.3 pooling race and gender groups and $0.7 for black men. This outcome is available only at the county (not tract) level due to small sample sizes. (Source: American Community Survey)
+Frac. in Top 20% Based on Household Income	Fraction of children who grew up in this area who have average household income in 2014-15 (in their mid-30s) in the top 20% of the national income distribution for children born in the same year. Estimates have a margin of error; for example, standard error at tract level for children with parents at 25th percentile is 2% pooling race and gender groups and 2% for black men. (Source: Income Tax Records)
+Frac. In Top 1% Based on Household Income	Fraction of children who grew up in this area who have average household income in 2014-15 (in their mid-30s) in the top 1% of the national income distribution for children born in the same year. Estimates have a margin of error; for example, standard error at county level for children with parents at 25th percentile is 0.1% pooling race and gender groups and 0.1% for black men. This outcome is available only at the county (not tract) level due to small sample sizes. (Source: Income Tax Records)
+Frac. in Top 20% Based on Indiv Income	Fraction of children who grew up in this area who have average individual income in 2014-15 (in their mid-30s) in the top 20% of the national income distribution for children born in the same year. Estimates have a margin of error; for example, standard error at tract level for children with parents at 25th percentile is 2% pooling race and gender groups and 4% for black men. (Source: Income Tax Records)
+Frac. In Top 1% Based on Indiv. Income	Fraction of children who grew up in this area who have average individual income in 2014-15 (in their mid-30s) in the top 1% of the national income distribution for children born in the same year. Estimates have a margin of error; for example, standard error at county level for children with parents at 25th percentile is 0.1% pooling race and gender groups and 0.1% for black men. This outcome is available only at the county (not tract) level due to small sample sizes. (Source: Income Tax Records)
+% Staying in Same Commuting Zone as Adults	Fraction of children who grew up in this area who in 2015 still live in one of the Commuting Zones (metro areas) in which they grew up. Estimates have a margin of error; for example, standard error at tract level for children with parents at 25th percentile is 3% pooling race and gender groups and 6% for black men. (Source: Income Tax Records)
+% Staying in Same Tract as Adults	Fraction of children who grew up in this area who in 2015 still live in one of the Census tracts in which they grew up. Estimates have a margin of error; for example, standard error at tract level for children with parents at 25th percentile is 3% pooling race and gender groups and 6% for black men. (Source: Income Tax Records)
+Household Income (Stayed in Commuting Zone)	Average annual household income in 2014-15 for children (now in their mid-30s) who grew up in this area and live in the same commuting zone (metro area) as an adult. Estimates have a margin of error; for example, standard error at tract level for children with parents at 25th percentile is $2,249 pooling race and gender groups and $2,807 for black men. (Source: Income Tax Records)
+Individual Income (Stayed in Commuting Zone)	Average annual individual income in 2014-15 for children (now in their mid-30s) who grew up in this area and live in the same commuting zone as an adult.  Estimates have a margin of error; for example, standard error at tract level for children with parents at 25th percentile is $1,856 pooling race and gender groups and $2,927 for black men.  (Source: Income Tax Records)
+Household Income for U.S. Natives	Average annual household income in 2014-15 for children (now in their mid-30s) who grew up in this area and whose mothers were born in the United States. Estimates have a margin of error; for example, standard error at county level for children with parents at 25th percentile is $768 pooling race and gender groups and $1,289 for black men. This outcome is available only at the county (not tract) level due to small sample sizes. (Source: Income Tax Records and the American Community Survey)
+Household Income for Immigrants	Average annual household income in 2014-15 for children (now in their mid-30s) who grew up in this area and whose mothers were not born in the United States. Estimates have a margin of error; for example, standard error at county level for children with parents at 25th percentile is $2,488 pooling race and gender groups and $3,637 for black men. This outcome is available only at the county (not tract) level due to small sample sizes. (Source: Federal income tax records and the American Community Survey)
+Individual Income for U.S. Natives	Average annual individual income in 2014-15 for children (now in their mid-30s) who grew up in this area and whose mothers were born in the United States. Estimates have a margin of error; for example, standard error at county level for children with parents at 25th percentile is $625 pooling race and gender groups and $1,272 for black men. This outcome is available only at the county (not tract) level due to small sample sizes. (Source: Income Tax Records and the American Community Survey)
+Individual Income for Immigrants	Average annual individual income in 2014-15 for children (now in their mid-30s) who grew up in this area and whose mothers were not born in the United States. Estimates have a margin of error; for example, standard error at county level for children with parents at 25th percentile is $1,869 pooling race and gender groups and $3,222 for black men. This outcome is available only at the county (not tract) level due to small sample sizes. (Source: Income Tax Records and the American Community Survey)
+Number of Children	Number of children below age 18 in the 2000 Decennial Census who lived in this area (Source: Income Tax Records and 2000 Decennial Census.)
+Median Rent 2012-16	 Median rent for renter-occupied housing units in this area in 2012-16. (Source: American Community Survey.)
+Job Growth Rate from 2004 to 2013	Average annualized growth rate of the number of jobs in this area between 2004 and 2013. (Source: Longitudinal Employer-Household Dynamics and Local Area Unemployment Statistics. Tract-level data unavailable for Massachusetts and Washington D.C.)
+Median Hhold. Income of Residents in 2012-16	Median household income (in 2015 dollars) for all households living in this area in 2012-16.  (Source: American Community Survey.)
+Median Hhold. Income of Residents in 1990	Median household income (in 2015 dollars) for all households living in this area in 1990.  (Source: 1990 Decennial Census.)
+Poverty Rate in 2012-16	Fraction of all residents of this area with household incomes below the federal poverty line in 2012-16. (Source: American Community Survey.)
+Fraction College Graduates in 2012-16	Fraction of all residents over the age of 25 in this area with a bachelor's degree or higher in 2012-16.  (Source: American Community Survey.)
+Fraction Non-White in 2010	Fraction of all residents in this area who self-identify as a race and ethnicity other than white non-Hispanic in 2010. (Source: 2010 Decennial Census)
+Foreign-Born Share in 2012-16	Fraction of all residents of this area who were born outside the United States in 2012-16. (Source: American Community Survey.)
+Fraction Single Parents in 2012-16	Fraction of households with children in this area whose head of household was single in 2012-16  (Source: American Community Survey.)
+Population Density in 2010	Number of residents per square mile in this area in 2010. (Source: 2010 Census Gazetteer and 2010 Decennial Census.)
+Density of Jobs in 2013	Number of jobs per square mile in this area in 2013. (Source: 2010 Census Gazetteer, Longitudinal Employer-Household Dynamics and Local Area Unemployment Statistics)
+Fraction with Short Work Commutes in 2012-16	Fraction of all working residents over the age of 16 in this area who commute fewer than 15 minutes to work in 2012-16  (Source: American Community Survey.)
+Census Response Rate (Social Capital Proxy)	Fraction of 2010 Decennial Census forms sent to this area that were completed and returned by mail, a proxy for social capital. (Source: 2010 Decennial Census.)
+
