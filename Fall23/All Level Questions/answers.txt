@@ -1,0 +1,14 @@
+(1)How many school districts were there in total in 2017-18 using Excel?
+17604
+(2) How many school districts were there in 2017-18 using Python? 
+This number does not coincide with the number given by Excel. This is because of file headers etc
+17616
+(3) How many school districts were there in 2017-18 with a different data set?
+
+Red questions:
+
+#1 17604
+#2 17616 This number does not coincide with the number given by Excel. This is because of file headers etc
+#3 cp-1252 is needed for us based data becuase it is the legacy standard 
+    and without specificying it will be treated as utf-8 and decoding will fail
+#4
