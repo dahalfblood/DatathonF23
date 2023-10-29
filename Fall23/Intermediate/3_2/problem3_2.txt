@@ -1,0 +1,2 @@
+Explore how all subject matters,
+which you have now imported into PostgreSQL, are related to poverty.

@@ -1,0 +1,2 @@
+Plot the number of students per school district vs. the number of students
+in poverty for all school districts in the US.
