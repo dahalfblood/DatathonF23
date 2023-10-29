@@ -1,4 +1,18 @@
+--USED TO JOIN THE USSD17 DATA AND THE LEA CHARACTERISTICS DATA SETS TOGETHER SO WE CAN SEE RATES OF
+--  CHILD POVERTY PER DISTRICT
 SELECT fips_code, district_id, child_pop, child_poverty_pop, leaid, lea_enr FROM ussd17, leacharacteristics 
 WHERE ussd17.fips_code || ussd17.district_id LIKE leacharacteristics.leaid
---ORDER BY leaid ASC
-LIMIT 600
+
+--USED TO COMPARE PERCENT OF CHILDREN IN POVERTY PER DISTRICT TO NUMBER OF CERTIFIED TEACHERS IN SAME DISTRICT
+create table pov_vs_algebra2 as (
+SELECT percent_pov, "SCH_MATHCERT_ALG2"
+    From pov_vs_enr, algebra2
+    where pov_vs_enr.leaid like algebra2.leaid
+	    and cast(sch_mathcert_alg2 as int) >= 0)
+
+--PERCENT_POV WAS CALCULATED BY DIVIDING LEACHARACTERISTICS.LEA_ENR INTO USSD17.child_poverty_pop
+UPDATE POVERTY_VS_ENROLLMENT
+SET PERCENT_POV = CAST(POVERTY_POP AS NUMERIC) / CAST(ENROLLMENT AS NUMBERIC)
+
+
+
